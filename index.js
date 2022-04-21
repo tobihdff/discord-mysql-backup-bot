@@ -93,7 +93,7 @@ function sendToDiscord(database, file, filename, user) {
 };
 
 client.on('message', message => {
-    if (message.channel.id !== config.dc.backup_channel_id) return;
+    if (message.channel.id !== backup_channel_id) return;
     if (message.content.toLowerCase() === command) {
         let issuer = message.author.id
         createBackup(dbname, issuer)
