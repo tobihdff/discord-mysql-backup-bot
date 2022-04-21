@@ -4,22 +4,32 @@ const cron = require('node-cron');
 var findRemoveSync = require('find-remove');
 var config = require('./config');
 const client = new Discord.Client()
+const cron = config.cron;
+const servername = config.dc.servername;
+const dbname = config.db.database;
+const host = config.db.host;
+const user = config.db.user;
+const password = config.db.password;
+const servericon = config.dc.servericon;
+const command = config.dc.manual_command;
+const activity = config.dc.bot_activity;
+const backup_channel_id = config.dc.backup_channel_id;
 
 
 client.once('ready', () => {
     client.user.setStatus('online');
-    client.user.setActivity(`${config.dc.bot_activity}`);
-    console.log(`${config.dc.servername} | DB-Backup started succesfully`);
+    client.user.setActivity(`${activity.toString()}`);
+    console.log(`${servername.toString()} | DB-Backup started succesfully`);
 })
 
 if (config.delete_backups) {
-    cron.schedule(config.cron, () => {
+    cron.schedule(cron.toString(), () => {
         findRemoveSync(__dirname + '/backups', {age: {seconds: 604800}, extensions: ['.sql']});
     });
-}
+};
 
-cron.schedule(config.cron, function() {
-   createBackup(config.db.database);
+cron.schedule(config.cron.toString(), () => {
+   createBackup(dbname.toString());
 });
 
 function delay(time) {
@@ -41,9 +51,9 @@ function createBackup(database, user) {
     mysqldump({
              
         connection: {
-            host: config.db.host,
-            user: config.db.user,
-            password: config.db.password,
+            host: host.toString(),
+            user: user.toString(),
+            password: password.toString(),
             database: database
         },
         dumpToFile: file,
@@ -56,9 +66,9 @@ function createBackup(database, user) {
 function sendToDiscord(database, file, filename, user) {
     let embed = new Discord.MessageEmbed()
     embed.setColor('#58BAFF')
-    embed.setTitle(`${config.dc.servername} | Datenbank Backup`)
+    embed.setTitle(`${servername.toString()} | Datenbank Backup`)
     embed.setTimestamp()
-    embed.setFooter(config.dc.servername, config.dc.servericon)
+    embed.setFooter(servername.toString(), servericon.toString())
  
     if (user) {
         embed.addFields(
@@ -74,7 +84,7 @@ function sendToDiscord(database, file, filename, user) {
         )
     };
  
-    backupchannel = client.channels.cache.get(config.dc.backup_channel_id);
+    backupchannel = client.channels.cache.get(backup_channel_id.toString());
     backupchannel.send(embed)
     delay(250).then(() => backupchannel.send({files:
         [file]})
@@ -83,9 +93,9 @@ function sendToDiscord(database, file, filename, user) {
 
 client.on('message', message => {
     if (message.channel.id !== config.dc.backup_channel_id) return;
-    if (message.content.toLowerCase() === config.dc.manual_command) {
+    if (message.content.toLowerCase() === command.toString()) {
         let issuer = message.author.id
-        createBackup(config.db.database, issuer)
+        createBackup(dbname.toString(), issuer)
         message.delete();
     }
 })
