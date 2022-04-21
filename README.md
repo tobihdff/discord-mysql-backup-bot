@@ -8,6 +8,7 @@ This script can send a backup of your mysql database to your discord either on c
   git clone https://github.com/chrinxcoding/discord-mysql-backup-bot.git
   cd discord-mysql-backup-bot
   npm i
+  mkdir backups
   node index.js
 ```
 
