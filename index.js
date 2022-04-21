@@ -2,34 +2,35 @@ const Discord = require('discord.js');
 const mysqldump = require('mysqldump');
 const cron = require('node-cron');
 var findRemoveSync = require('find-remove');
-var config = require('./config');
+const config = require('config');
 const client = new Discord.Client()
-const cronjob = config.cron;
-const servername = config.dc.servername;
-const dbname = config.db.database;
-const host = config.db.host;
-const user = config.db.user;
-const password = config.db.password;
-const servericon = config.dc.servericon;
-const command = config.dc.manual_command;
-const activity = config.dc.bot_activity;
-const backup_channel_id = config.dc.backup_channel_id;
-const token = config.dc.bot_token;
+const cronjob = config.get('general.cronjob');
+const servername = config.get('discord.servername');
+const dbname = config.get('mysql.database');
+const host = config.get('mysql.host');
+const username = config.get('mysql.username');
+const password = config.get('mysql.password');
+const servericon = config.get('discord.servericon');
+const command = config.get('discord.command');
+const activity = config.get('discord.bot_activity');
+const backup_channel_id = config.get('discord.channelid');
+const token = config.get('discord.token');
+const delete_backups = config.get('general.delete_backups');
 
 client.once('ready', () => {
     client.user.setStatus('online');
-    client.user.setActivity(`${activity.toString()}`);
-    console.log(`${servername.toString()} | DB-Backup started succesfully`);
+    client.user.setActivity(`${activity}`);
+    console.log(`${servername} | DB-Backup started succesfully`);
 })
 
-if (config.delete_backups) {
-    cron.schedule(cronjob.toString(), () => {
+if (delete_backups) {
+    cron.schedule(cronjob, () => {
         findRemoveSync(__dirname + '/backups', {age: {seconds: 604800}, extensions: ['.sql']});
     });
 };
 
-cron.schedule(cronjob.toString(), () => {
-   createBackup(dbname.toString());
+cron.schedule(cronjob, () => {
+   createBackup(dbname);
 });
 
 function delay(time) {
@@ -51,9 +52,9 @@ function createBackup(database, user) {
     mysqldump({
              
         connection: {
-            host: host.toString(),
-            user: user.toString(),
-            password: password.toString(),
+            host: host,
+            user: username,
+            password: password,
             database: database
         },
         dumpToFile: file,
@@ -66,9 +67,9 @@ function createBackup(database, user) {
 function sendToDiscord(database, file, filename, user) {
     let embed = new Discord.MessageEmbed()
     embed.setColor('#58BAFF')
-    embed.setTitle(`${servername.toString()} | Datenbank Backup`)
+    embed.setTitle(`${servername} | Datenbank Backup`)
     embed.setTimestamp()
-    embed.setFooter(servername.toString(), servericon.toString())
+    embed.setFooter(servername, servericon)
  
     if (user) {
         embed.addFields(
@@ -84,7 +85,7 @@ function sendToDiscord(database, file, filename, user) {
         )
     };
  
-    backupchannel = client.channels.cache.get(backup_channel_id.toString());
+    backupchannel = client.channels.cache.get(backup_channel_id);
     backupchannel.send(embed)
     delay(250).then(() => backupchannel.send({files:
         [file]})
@@ -93,11 +94,11 @@ function sendToDiscord(database, file, filename, user) {
 
 client.on('message', message => {
     if (message.channel.id !== config.dc.backup_channel_id) return;
-    if (message.content.toLowerCase() === command.toString()) {
+    if (message.content.toLowerCase() === command) {
         let issuer = message.author.id
-        createBackup(dbname.toString(), issuer)
+        createBackup(dbname, issuer)
         message.delete();
     }
 })
 
-client.login(token.toString())
+client.login(token)
