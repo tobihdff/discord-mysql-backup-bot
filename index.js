@@ -14,7 +14,7 @@ const servericon = config.dc.servericon;
 const command = config.dc.manual_command;
 const activity = config.dc.bot_activity;
 const backup_channel_id = config.dc.backup_channel_id;
-
+const token = config.dc.bot_token;
 
 client.once('ready', () => {
     client.user.setStatus('online');
@@ -100,4 +100,4 @@ client.on('message', message => {
     }
 })
 
-client.login(config.dc.bot_token)
+client.login(token.toString())
