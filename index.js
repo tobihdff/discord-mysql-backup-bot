@@ -4,7 +4,7 @@ const cron = require('node-cron');
 var findRemoveSync = require('find-remove');
 var config = require('./config');
 const client = new Discord.Client()
-const cron = config.cron;
+const cronjob = config.cron;
 const servername = config.dc.servername;
 const dbname = config.db.database;
 const host = config.db.host;
@@ -23,12 +23,12 @@ client.once('ready', () => {
 })
 
 if (config.delete_backups) {
-    cron.schedule(cron.toString(), () => {
+    cron.schedule(cronjob.toString(), () => {
         findRemoveSync(__dirname + '/backups', {age: {seconds: 604800}, extensions: ['.sql']});
     });
 };
 
-cron.schedule(config.cron.toString(), () => {
+cron.schedule(cronjob.toString(), () => {
    createBackup(dbname.toString());
 });
 
