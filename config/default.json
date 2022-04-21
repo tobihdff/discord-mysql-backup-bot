@@ -1,0 +1,22 @@
+{
+    "general": {
+        "cronjob": "0 * * * *",
+        "delete_backups": true
+    },
+
+    "mysql": {
+      "host": "127.0.0.1",
+      "username": "",
+      "database": "", 
+      "password": ""
+    },
+
+    "discord": {
+        "token": "",
+        "command": ".gen",
+        "channelid": "",
+        "servername": "",
+        "servericon": "",
+        "bot_activity": ""
+    }
+}
