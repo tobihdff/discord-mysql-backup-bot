@@ -4,7 +4,7 @@
 This script can send a backup of your mysql database to your discord either on command or after fixed times.
 ## Installation
 
-Install the bot with npm
+Install the bot
 
 ```bash
   git clone https://github.com/chrinxcoding/discord-mysql-backup-bot.git
