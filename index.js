@@ -73,14 +73,14 @@ function sendToDiscord(database, file, filename, user) {
  
     if (user) {
         embed.addFields(
-            { name: 'Dateiname:', value: "`" + filename + "`" },
-            { name: 'Datenbank:', value: database },
+            { name: 'Dateiname', value: "`" + filename + "`" },
+            { name: 'Datenbank', value: database },
             { name: 'Erstellt von', value: '<@' + user + '>' },
          )
     } else {
         embed.addFields(
-            { name: 'Dateiname:', value: "`" + filename + "`" },
-            { name: 'Datenbank:', value: database },
+            { name: 'Dateiname', value: "`" + filename + "`" },
+            { name: 'Datenbank', value: database },
             { name: 'Erstellt von', value: 'System' },
         )
     };
