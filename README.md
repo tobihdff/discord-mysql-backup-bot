@@ -16,7 +16,7 @@ This script can send a backup of your mysql database to your discord either on c
 
 | Variable  | Description                |
 | :-------- | :------------------------- |
-| `cronjob` | https://www.bennetrichter.de/tools/crontab-generator/ (default is one every hour)
+| `cronjob` | https://www.bennetrichter.de/tools/crontab-generator/ (default is once every hour)
 | `delete_backups` | delete backups older than 7 days from server (default is true)
 | `host` | ip address of your mysql server
 | `username` | username of your mysql user
