@@ -1,5 +1,5 @@
 
-# MySQL Backup Bot
+# MySQL Backup Bot [DEPRECATED]
 
 This script can send a backup of your mysql database to your discord either on command or after fixed times.
 ## Installation
